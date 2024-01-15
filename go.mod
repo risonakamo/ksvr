@@ -1,4 +1,4 @@
-module ksvr/v2
+module ksvr
 
 go 1.21.5
 
