@@ -3,16 +3,28 @@ package main
 import (
 	"fmt"
 	ksvr "ksvr/lib"
+	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/atotto/clipboard"
 	"github.com/patrickmn/go-cache"
 )
 
 // --- test vars ---
-const sentence string="本当のこと、知ってるから。誤魔化しても、分かってるから。"
+// const sentence string="本当のこと、知ってるから。誤魔化しても、分かってるから。"
 
 func main() {
+    var sentence string
+    var e error
+    sentence,e=clipboard.ReadAll()
+
+    if e!=nil {
+        log.Fatalln("clipboard err",e)
+    }
+
+    fmt.Println(sentence)
+
     // --- config vars ---
     var cwd string
     cwd,_=os.Getwd()
@@ -50,6 +62,15 @@ func main() {
     if inDb {
         return
     }
+
+
+    // kanji check. if the sentence has no kanjis, dont add it
+    var kanjis []rune=ksvr.ExtractKanjis(sentence)
+
+    if len(kanjis)==0 {
+        return
+    }
+
 
 
     // if got to this point, ready to add it to db. add it to db.

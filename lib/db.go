@@ -42,7 +42,7 @@ func (self *KsvrDb) AddSentence(sentence string) {
 
     var sentenceItem SentenceInfo=SentenceInfo{
         sentence:sentence,
-        kanjis:extractKanjis(sentence),
+        kanjis:ExtractKanjis(sentence),
     }
 
     var jsondata []byte

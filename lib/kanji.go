@@ -5,7 +5,7 @@ package ksvr
 import "github.com/KEINOS/go-joyokanjis/kanjis"
 
 // return list of all unique kanjis extracted from a string
-func extractKanjis(str string) []rune {
+func ExtractKanjis(str string) []rune {
 	var res []rune
 
 	for _,char := range str {
