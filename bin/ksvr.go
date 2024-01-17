@@ -13,6 +13,7 @@ import (
 )
 
 const sentenceProcessorsCount int=5
+const clipboardDetectInterval int=300 //millesecond
 
 func main() {
     // --- config vars ---
@@ -65,7 +66,9 @@ func clipboardWorker(
 
     wg *sync.WaitGroup,
 ) {
-    var ticker *time.Ticker=time.NewTicker(time.Duration(5)*time.Second)
+    var ticker *time.Ticker=time.NewTicker(
+        time.Duration(clipboardDetectInterval)*time.Millisecond,
+    )
 
     var lastSentence string=""
 
@@ -73,7 +76,6 @@ func clipboardWorker(
     go func() {
         for {
             <-ticker.C
-            fmt.Println("hello")
 
             var sentence string
             var e error
@@ -87,13 +89,13 @@ func clipboardWorker(
             // last sentence check. don't handle if it's the same as the thing we
             // just handled
             if sentence==lastSentence {
-                fmt.Println("skipping, same as last")
+                // fmt.Println("skipping, same as last")
                 continue
             }
 
             lastSentence=sentence
 
-            fmt.Println("preparing to process:",sentence)
+            // fmt.Println("preparing to process:",sentence)
             sentences<-sentence
         }
     }()
@@ -115,7 +117,7 @@ func sentenceProcessorWorker(
         // mem cache check. don't handle anything that was already seen in the
         // last few minutes
         if ksvr.SentenceInCache(sentenceCache,sentence) {
-            fmt.Println("in mem cache")
+            // fmt.Println("in mem cache")
             continue
         }
 
@@ -127,7 +129,7 @@ func sentenceProcessorWorker(
         var inDb bool=db.SentenceInDb(sentence)
 
         if inDb {
-            fmt.Println("already in db")
+            // fmt.Println("already in db")
             continue
         }
 
@@ -136,7 +138,7 @@ func sentenceProcessorWorker(
         var kanjis []rune=ksvr.ExtractKanjis(sentence)
 
         if len(kanjis)==0 {
-            fmt.Println("no kanjis")
+            // fmt.Println("no kanjis")
             continue
         }
 
