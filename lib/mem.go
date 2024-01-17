@@ -23,7 +23,7 @@ func NewSentenceCache() *cache.Cache {
 }
 
 // add sentence to the cache
-func AddSentence(c *cache.Cache,sentence string) {
+func AddSentenceToCache(c *cache.Cache,sentence string) {
     c.Add(
         sentence,
         true,
