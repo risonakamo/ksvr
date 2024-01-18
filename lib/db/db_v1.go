@@ -5,6 +5,7 @@ package ksvr
 
 import (
 	"encoding/json"
+	ksvr "ksvr/lib"
 	"log"
 
 	"github.com/syndtr/goleveldb/leveldb"
@@ -15,10 +16,17 @@ type KsvrDb struct {
     db *leveldb.DB
 }
 
+type DbV1 struct {
+	// sentence table.
+	// key: `sentence:{hash}`
+	// hash is sha256 hash of sentence.
+	sentence map[string]SentenceInfo
+}
+
 // item in sentence table
 type SentenceInfo struct {
-    sentence string
-    kanjis []rune
+	sentence string
+	kanjis   []rune
 }
 
 // create ksvr db
@@ -42,7 +50,7 @@ func (self *KsvrDb) AddSentence(sentence string) {
 
     var sentenceItem SentenceInfo=SentenceInfo{
         sentence:sentence,
-        kanjis:ExtractKanjis(sentence),
+        kanjis:ksvr.ExtractKanjis(sentence),
     }
 
     var jsondata []byte
@@ -68,13 +76,4 @@ func (self *KsvrDb) SentenceInDb(sentence string) bool {
     has,_=self.db.Has(key,nil)
 
     return has
-}
-
-// convert sentence into key to find in sentence table
-func createSentenceKey(sentence string) []byte {
-    var sentenceHash []byte=HashSentence(sentence)
-
-    var key []byte=[]byte("sentence:")
-    key=append(key,sentenceHash...)
-    return key
 }
