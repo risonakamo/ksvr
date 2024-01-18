@@ -1,2 +1,2 @@
 experiments/leveldb/db
-bin/db
+bin/ksvr/db
